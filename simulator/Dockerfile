@@ -1,11 +1,9 @@
-version: "3"
+FROM golang:1.16
 
-services:
-    app:
-        build: .
-        container_name: simulator
-        volumes:
-            - .:/go/src/
-        extra_hosts:
-            - "host.docker.internal:172.17.0.1"
-            
+WORKDIR /go/src
+ENV PATH="/go/bin:${PATH}"
+
+RUN apt-get update && \
+    apt-get install build-essential librdkafka-dev -y
+
+CMD ["tail", "-f", "/dev/null"]

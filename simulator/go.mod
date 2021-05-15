@@ -1,4 +1,4 @@
-module github.com/matheuslss/code-delivery
+module github.com/matheuslss/code-delivery/simulator
 
 go 1.16
 

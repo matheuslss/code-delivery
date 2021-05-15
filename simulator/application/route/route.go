@@ -2,6 +2,7 @@ package route
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"os"
 	"strconv"
@@ -11,14 +12,21 @@ import (
 )
 
 type Route struct {
-	ID        string
-	ClientID  string
-	Positions []Position
+	ID        string     `json:"id"`
+	ClientID  string     `json:"clienteID"`
+	Positions []Position `json:"positions"`
 }
 
 type Position struct {
-	Lat  float64
-	Long float64
+	Lat  float64 `json:"latitude"`
+	Long float64 `json:"longitude"`
+}
+
+type PartialRoutePosition struct {
+	RouteID   string    `json:"routeID"`
+	ClienteID string    `json:"clienteID"`
+	Positions []float64 `json:"positions"`
+	Finished  bool      `json:"finished"`
 }
 
 func (r *Route) LoadPositions() error {
@@ -55,4 +63,29 @@ func (r *Route) LoadPositions() error {
 	}
 
 	return nil
+}
+
+func (r *Route) ExportJsonPositions() ([]string, error) {
+	var route PartialRoutePosition
+	var result []string
+
+	for i, position := range r.Positions {
+		route.RouteID = r.ID
+		route.ClienteID = r.ClientID
+		route.Positions = []float64{position.Lat, position.Long}
+		route.Finished = false
+
+		if len(r.Positions)-1 == i {
+			route.Finished = true
+		}
+
+		jsonRoute, err := json.Marshal(route)
+		if err != nil {
+			logrus.Error(err)
+			return []string{}, errors.New("Não foi possível exportar as rotas.")
+		}
+
+		result = append(result, string(jsonRoute))
+	}
+	return result, nil
 }

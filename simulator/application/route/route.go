@@ -29,6 +29,10 @@ type PartialRoutePosition struct {
 	Finished  bool      `json:"finished"`
 }
 
+func NewRoute() *Route {
+	return &Route{}
+}
+
 func (r *Route) LoadPositions() error {
 	if r.ID == "" {
 		return errors.New("Não foi possível obter o identificador da rota.")

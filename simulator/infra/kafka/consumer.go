@@ -29,13 +29,13 @@ func (k *KafkaConsumer) Consume() {
 		log.Fatal("error consuming kafka message: " + err.Error())
 	}
 
-	topics := []string{os.Getenv("KafkareadTopic")}
+	topics := []string{os.Getenv("KafkaReadTopic")}
 	consumer.SubscribeTopics(topics, nil)
 	fmt.Println("Kafka consumer has been started")
 
 	for {
 		msg, err := consumer.ReadMessage(-1)
-		if err != nil {
+		if err == nil {
 			k.MsgChannel <- msg
 		}
 	}

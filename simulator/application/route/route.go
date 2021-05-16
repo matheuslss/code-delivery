@@ -12,8 +12,8 @@ import (
 )
 
 type Route struct {
-	ID        string     `json:"id"`
-	ClientID  string     `json:"clienteID"`
+	ID        string     `json:"routeID"`
+	ClientID  string     `json:"clientID"`
 	Positions []Position `json:"positions"`
 }
 
@@ -24,7 +24,7 @@ type Position struct {
 
 type PartialRoutePosition struct {
 	RouteID   string    `json:"routeID"`
-	ClienteID string    `json:"clienteID"`
+	ClientID  string    `json:"clientID"`
 	Positions []float64 `json:"positions"`
 	Finished  bool      `json:"finished"`
 }
@@ -35,13 +35,14 @@ func NewRoute() *Route {
 
 func (r *Route) LoadPositions() error {
 	if r.ID == "" {
-		return errors.New("Não foi possível obter o identificador da rota.")
+		logrus.Errorln(errors.New("error: invalid routeID"))
+		return errors.New("error: invalid routeID")
 	}
 
 	file, err := os.Open("destinations/" + r.ID + ".txt")
 	if err != nil {
 		logrus.Error(err)
-		return errors.New("Não foi possível obter as rotas.")
+		return errors.New("error: the file could not be opened")
 	}
 
 	defer file.Close()
@@ -53,12 +54,12 @@ func (r *Route) LoadPositions() error {
 		lat, err := strconv.ParseFloat(data[0], 64)
 		if err != nil {
 			logrus.Error(err)
-			return errors.New("Não foi possível obter as rotas.")
+			return errors.New("error: could convert latitude")
 		}
 		long, err := strconv.ParseFloat(data[1], 64)
 		if err != nil {
 			logrus.Error(err)
-			return errors.New("Não foi possível obter as rotas.")
+			return errors.New("error: could not convert longitude")
 		}
 		r.Positions = append(r.Positions, Position{
 			Lat:  lat,
@@ -75,7 +76,7 @@ func (r *Route) ExportJsonPositions() ([]string, error) {
 
 	for i, position := range r.Positions {
 		route.RouteID = r.ID
-		route.ClienteID = r.ClientID
+		route.ClientID = r.ClientID
 		route.Positions = []float64{position.Lat, position.Long}
 		route.Finished = false
 
@@ -86,7 +87,7 @@ func (r *Route) ExportJsonPositions() ([]string, error) {
 		jsonRoute, err := json.Marshal(route)
 		if err != nil {
 			logrus.Error(err)
-			return []string{}, errors.New("Não foi possível exportar as rotas.")
+			return []string{}, errors.New("error: unable to export route")
 		}
 
 		result = append(result, string(jsonRoute))

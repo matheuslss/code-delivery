@@ -6,6 +6,7 @@ import (
 
 	ckafka "github.com/confluentinc/confluent-kafka-go/kafka"
 	"github.com/joho/godotenv"
+	appKafka "github.com/matheuslss/code-delivery/simulator/application/kafka"
 	"github.com/matheuslss/code-delivery/simulator/infra/kafka"
 )
 
@@ -24,5 +25,6 @@ func main() {
 
 	for msg := range msgChannel {
 		fmt.Println(string(msg.Value))
+		go appKafka.Produce(msg)
 	}
 }

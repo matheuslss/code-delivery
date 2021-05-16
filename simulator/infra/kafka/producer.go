@@ -30,7 +30,7 @@ func Publish(msg, topic string, producer *ckafka.Producer) error {
 	err := producer.Produce(message, nil)
 	if err != nil {
 		logrus.Error(err)
-		return errors.New("Não foi possível publicar a mensagem.")
+		return errors.New("error: could not publish message")
 	}
 
 	return nil

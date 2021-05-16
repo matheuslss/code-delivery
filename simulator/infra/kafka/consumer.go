@@ -26,7 +26,7 @@ func (k *KafkaConsumer) Consume() {
 
 	consumer, err := ckafka.NewConsumer(configMap)
 	if err != nil {
-		log.Fatal("error consuming kafka message: " + err.Error())
+		log.Fatal("error: " + err.Error())
 	}
 
 	topics := []string{os.Getenv("KafkaReadTopic")}

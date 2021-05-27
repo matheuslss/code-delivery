@@ -7,4 +7,5 @@ Repositório destinado à pratica do conteúdo da segunda Imersão Full Stack & 
 Tecnologias utilizadas: 
 * Docker
 * Go (golang)
+* Typescript
 * Apache-kafka
